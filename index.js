@@ -114,11 +114,12 @@ async function GetVideo(Video) {
             await main.waitForSelector('.page-title');
 
             var html = await main.evaluate(function() {
-                return document.getElementsByTagName('body')[0].innerHTML;
+                return document.getElementsByTagName('html')[0].innerHTML;
             });
 
-            await main.screenshot({path: 'example3.png'})
-            console.log(html);
+            fs.writeFileSync('file.txt', html);
+            await main.screenshot({path: 'example3.png'});
+            console.log('html');
 
             // var Title = Getstring(html, "setVideoTitle(", ");");
             // var Mozaique = Getstring(html, "setThumbSlideBig(", ");");
