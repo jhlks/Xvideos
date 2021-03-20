@@ -1,6 +1,9 @@
 const TelegramBot = require('node-telegram-bot-api');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const sqlite3 = require("sqlite3");
+
+puppeteer.use(StealthPlugin())
 
 let db = new sqlite3.Database('banco.db', (err) => {
     if (err)
@@ -31,10 +34,10 @@ bot.on('message', async (msg) =>
             bot.sendMessage(msg.from.id, 'Pedido recebido, aguarde...');
             
             await GetVideo(VideoID).then( async info => {
-                const videoMP4 = 'http://adf.ly/16408729/https://jhlks.github.io/goto/?ref=' + base64(info.videoUrlHigh);
-                const NovaPontuacao = Usuario[0]['Pontos'] - 1;
-                await UpdateUser('Pontos', NovaPontuacao, UserId);
-                bot.sendPhoto(msg.from.id, info.mozaique, { caption: `üé¨ ${info.title} \n\nüíé Pontos restantes: ${NovaPontuacao}`, reply_markup: { inline_keyboard: [[{text: 'MP4 VIDEO', url: `${videoMP4}` }]]}});
+                // const videoMP4 = 'http://adf.ly/16408729/https://jhlks.github.io/goto/?ref=' + base64(info.videoUrlHigh);
+                // const NovaPontuacao = Usuario[0]['Pontos'] - 1;
+                // await UpdateUser('Pontos', NovaPontuacao, UserId);
+                // bot.sendPhoto(msg.from.id, info.mozaique, { caption: `Ìæ¨ ${info.title} \n\nÌ≤é Pontos restantes: ${NovaPontuacao}`, reply_markup: { inline_keyboard: [[{text: 'MP4 VIDEO', url: `${videoMP4}` }]]}});
             }).catch(err => {
                 bot.sendMessage(msg.from.id, 'erro: 39');
                 console.log(err);
@@ -75,10 +78,10 @@ bot.on('message', async (msg) =>
             }
         }
     } else if( str === '/convidar' ) {
-        bot.sendMessage(ChatId, `Convide para ganhar pontos! \nüî• A cada amigo que acessa seu link de convite, voc√™ ganha 2 pontos! \nSeu Link de convite: https://t.me/xlxvideosredbot?start=${UserId} \n‚ú® Mande para seus amigos e ganhe pontos gr√°tis! \n\n‚ùï Os postos servem para voc√™ poder usar o bot.`, { parse_mode: 'HTML' })
+        bot.sendMessage(ChatId, `Convide para ganhar pontos! \nÌ¥• A cada amigo que acessa seu link de convite, voc√™ ganha 2 pontos! \nSeu Link de convite: https://t.me/xlxvideosredbot?start=${UserId} \n‚ú® Mande para seus amigos e ganhe pontos gr√°tis! \n\n‚ùï Os postos servem para voc√™ poder usar o bot.`, { parse_mode: 'HTML' })
     } else if ( str === '/pontos' ) {
         const Usuario = await searchUserById(UserId);
-        bot.sendMessage(ChatId, `üíé Pontos: ${Usuario[0]['Pontos']} \nüë• ${Usuario[0]['Referencia']} Pessoas usaram seu link de convite \n\n‚ùï Ganhe pontos convidando amigos (/convidar)`);
+        bot.sendMessage(ChatId, `Ì≤é Pontos: ${Usuario[0]['Pontos']} \nÌ±• ${Usuario[0]['Referencia']} Pessoas usaram seu link de convite \n\n‚ùï Ganhe pontos convidando amigos (/convidar)`);
     } else {
         console.log('falha');
     }
@@ -114,17 +117,20 @@ async function GetVideo(Video) {
                 return document.getElementsByTagName('body')[0].innerHTML;
             });
 
-            var Title = Getstring(html, "setVideoTitle(", ");");
-            var Mozaique = Getstring(html, "setThumbSlideBig(", ");");
-            var VideoUrlHigh = Getstring(html, "setVideoUrlHigh(", ");");
-            var VideoHLS = Getstring(html, "setVideoHLS(", ");");
-            var Thumb = Getstring(html, "setThumbUrl169(", ");");
+            await page.screenshot({path: 'example3.png'})
+            console.log(html);
+
+            // var Title = Getstring(html, "setVideoTitle(", ");");
+            // var Mozaique = Getstring(html, "setThumbSlideBig(", ");");
+            // var VideoUrlHigh = Getstring(html, "setVideoUrlHigh(", ");");
+            // var VideoHLS = Getstring(html, "setVideoHLS(", ");");
+            // var Thumb = Getstring(html, "setThumbUrl169(", ");");
             
-            video.title = Title.substring(2 , Title.length -2);
-            video.mozaique = Mozaique.substring(2 , Mozaique.length -2);
-            video.videoUrlHigh = VideoUrlHigh.substring(2 , VideoUrlHigh.length -2);
-            video.videoHLS = VideoHLS.substring(2 , VideoHLS.length -2);
-            video.thumb = Thumb.substring(2 , Thumb.length -2);
+            // video.title = Title.substring(2 , Title.length -2);
+            // video.mozaique = Mozaique.substring(2 , Mozaique.length -2);
+            // video.videoUrlHigh = VideoUrlHigh.substring(2 , VideoUrlHigh.length -2);
+            // video.videoHLS = VideoHLS.substring(2 , VideoHLS.length -2);
+            // video.thumb = Thumb.substring(2 , Thumb.length -2);
 
             if(video) {
                 resolve(video);
