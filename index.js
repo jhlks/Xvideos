@@ -1,10 +1,12 @@
 const TelegramBot = require('node-telegram-bot-api');
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const puppeteer = require('puppeteer');
 const sqlite3 = require("sqlite3");
 const fs = require('fs');
 
-puppeteer.use(StealthPlugin())
+const cookies = [{
+  'name': 'session_token',
+  'value': 'b8f28a4425d795fcWMpYcnjLbQ-ulh-KcgAxwrrERgTF9y1VO5Q8YMrHnNlHfYOFRFsIUB--owB9n7U4EHvHb0ii2_mJ-AUGqkqPqddXwSB2V6QoLQuvhmLSh0riAXkk0IYjQ-PPC0TqztE6YpNG323GMZSIb8rQZVitMb9FciYpMuYZ9cZWRPNg4r9V_vqkNC0LHYVIRYjBEl7CyY3DrjDvS1EbcfG7lPepQgPR6VpvapupttalJPrgzPJlqkRpTwiy8fPnw-R_40uWJycQwO77aSubhCJfeK6eb3071v2Ggw56fWuhyKygde3JjrX3AOYFxXGRsajXyxQkNEosBsRpn_SGc-trWu-a2jSnSeu1VAWeuyYaGyTLJFay_vlUgNDUoamTXfQsfvZkzOhSepPTW48uqa5hTwQKZevqEi7wUze1ffY_yJ1tTDwkHcFJd_yVatzS5ORZ1kMWYzgheicovh07QEnnuTR2eJq9QjWcf92-dzs66D6DoE7fRNfLWUdC34qtZhtAJH_ExCAxFmMhsp5fn3robOldd4Nm9xykvM8Fkzrv48YWfefDYd9CeI8zlTHVro1jovo9o0ImqlPUPCMoIRAMyrLJRDkWQBsHTESOMGkVS0Jq8NZzytK3DQX2qAMpAjreDEx7iGMlRpv2uoH6rrH3y4_kAaNtBLnCUjWeTMzZODQ7uK-1V7sQsdIfdKqU_xAeTlj_LNFcZm1Uwf5QsXQR8La72x5gFXXgDDa3VYEvp8rQ17rQiMrPompJAGWHG2ZWzENssKtGsvhqaoHuTZoazuMHEY8HPc2ivGxeZZRDa-oSfoSZjXE-zKaJxykF42bGmXtfVo9RRMA52T-wao6j-IINvaAwrBMyRJ4H8BBQ-IS45dVM6Znq1kSKE-_DeiFqAia3JRgxVzeS3cswgnM4eCjRrb7OUfMCZKUKEh58yLp58t4WP7sL7TCPC71zW4LAmC9Yv2NWocKpolpvH1vGOUqWpWwNhwqarTUKgvsRv58RDn6yxMMnefPssIfxJsDYuZ00FKsdJuXc4hPSJYqgZYDdwlbpIOhyl8UdHeylu5An8d7htNbBMRwwx7iV0dreuSWml7sx0hHc7-yCszYDXmnoNbE6y3GMxmQtB_zIYk91NY8DfNCa4L1yxmtzeAWPadEkhrvtqNg02_lqIiMsuWhGRA%3D%3D'
+}];
 
 let db = new sqlite3.Database('banco.db', (err) => {
     if (err)
@@ -12,7 +14,7 @@ let db = new sqlite3.Database('banco.db', (err) => {
     console.log('Bando de Dados OK!');
 });
 
-const token = '1629078447:AAEulQs_agjtz2AxleDVjVCFUaR-LZ-R_98';
+const token = '1629078447:AAEabyJw0rTTyv_V-JzzaG051KcOt38kJeI';
 const bot = new TelegramBot(token, {polling: true});
 
 bot.on('message', async (msg) => 
@@ -35,10 +37,10 @@ bot.on('message', async (msg) =>
             bot.sendMessage(msg.from.id, 'Pedido recebido, aguarde...');
             
             await GetVideo(VideoID).then( async info => {
-                // const videoMP4 = 'http://adf.ly/16408729/https://jhlks.github.io/goto/?ref=' + base64(info.videoUrlHigh);
-                // const NovaPontuacao = Usuario[0]['Pontos'] - 1;
-                // await UpdateUser('Pontos', NovaPontuacao, UserId);
-                // bot.sendPhoto(msg.from.id, info.mozaique, { caption: `🎬 ${info.title} \n\n💎 Pontos restantes: ${NovaPontuacao}`, reply_markup: { inline_keyboard: [[{text: 'MP4 VIDEO', url: `${videoMP4}` }]]}});
+                const videoMP4 = 'http://adf.ly/16408729/https://jhlks.github.io/goto/?ref=' + base64(info.videoUrlHigh);
+                const NovaPontuacao = Usuario[0]['Pontos'] - 1;
+                await UpdateUser('Pontos', NovaPontuacao, UserId);
+                bot.sendPhoto(msg.from.id, info.mozaique, { caption: `${info.title} \n\nPontos restantes: ${NovaPontuacao}`, reply_markup: { inline_keyboard: [[{text: 'Assistir Vídeo', url: `${videoMP4}` }]]}});
             }).catch(err => {
                 bot.sendMessage(msg.from.id, 'erro: 39');
                 console.log(err);
@@ -53,9 +55,9 @@ bot.on('message', async (msg) =>
 
         if(Usuario.length === 0) {
             await insertNewUser( UserId, User, UserName, '1' );
-            bot.sendMessage(ChatId, `Bem Vindo ${UserName} \n\n⚙️ Envie um link do video, do Xvideos Red, Que eu vou usar seus pontos para te enviar o vídeo. \n Se você não tem pontos use (/convidar) para ganhar mais ponto grátis.`);
+            bot.sendMessage(ChatId, `Bem Vindo ${UserName} \n\nEnvie um link do video, do Xvideos Red, Que eu vou usar seus pontos para te enviar o vídeo. \n Se você não tem pontos use (/convidar) para ganhar mais ponto grátis.`);
         } else {
-            bot.sendMessage(ChatId, `Olá Novamente ${Usuario[0]['Nome']} ❤️ \n\n⚙️ Envie um link do video, do Xvideos Red, Que eu vou usar seus pontos para te enviar o vídeo.`);
+            bot.sendMessage(ChatId, `Olá Novamente ${Usuario[0]['Nome']} \n\nEnvie um link do video, do Xvideos Red, Que eu vou usar seus pontos para te enviar o vídeo.`);
         }
 
         if( str.replace('/start', '').trim().length > 0 ) 
@@ -79,10 +81,10 @@ bot.on('message', async (msg) =>
             }
         }
     } else if( str === '/convidar' ) {
-        bot.sendMessage(ChatId, `Convide para ganhar pontos! \n🔥 A cada amigo que acessa seu link de convite, você ganha 2 pontos! \nSeu Link de convite: https://t.me/xlxvideosredbot?start=${UserId} \n✨ Mande para seus amigos e ganhe pontos grátis! \n\n❕ Os postos servem para você poder usar o bot.`, { parse_mode: 'HTML' })
+        bot.sendMessage(ChatId, `Convide para ganhar pontos! \nA cada amigo que acessa seu link de convite, você ganha 2 pontos! \nSeu Link de convite: https://t.me/xlxvideosredbot?start=${UserId} \n✨ Mande para seus amigos e ganhe pontos grátis! \n\n❕ Os postos servem para você poder usar o bot.`, { parse_mode: 'HTML' })
     } else if ( str === '/pontos' ) {
         const Usuario = await searchUserById(UserId);
-        bot.sendMessage(ChatId, `💎 Pontos: ${Usuario[0]['Pontos']} \n👥 ${Usuario[0]['Referencia']} Pessoas usaram seu link de convite \n\n❕ Ganhe pontos convidando amigos (/convidar)`);
+        bot.sendMessage(ChatId, `Pontos: ${Usuario[0]['Pontos']} \n👥 ${Usuario[0]['Referencia']} Pessoas usaram seu link de convite \n\n❕ Ganhe pontos convidando amigos (/convidar)`);
     } else {
         console.log('falha');
     }
@@ -105,12 +107,14 @@ async function GetVideo(Video) {
         puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
             main = await browser.pages();
             main = main[0];
-            await main.goto('https://www.xvideos.com/account', { waitUntil: 'load', timeout: 0 });
-            await main.waitForSelector('button[type="submit"]');
-            await main.type('#signin-form_login', 'playsexy2023@gmail.com');
-            await main.type('#signin-form_password', '19mar.redhot');
-            await main.click('button.btn.btn-danger');
-            await sleep(5000);
+            await main.goto('https://www.xvideos.red/video' + Video + '/', { waitUntil: 'load', timeout: 0 });
+            //delete old cookies
+            const client = await main.target().createCDPSession();
+            await await client.send('Network.clearBrowserCookies');
+            //set new cookies
+            await main.setCookie(...cookies);
+            const cookiesSet = await main.cookies('https://www.xvideos.red/');
+            //go to page video
             await main.goto('https://www.xvideos.red/video' + Video + '/', { waitUntil: 'load', timeout: 0 });
             await main.waitForSelector('.page-title');
 
@@ -118,29 +122,26 @@ async function GetVideo(Video) {
                 return document.getElementsByTagName('html')[0].innerHTML;
             });
 
-            fs.writeFileSync('file.txt', html);
-            await main.screenshot({path: 'example3.png'});
-            console.log('html');
-
-            // var Title = Getstring(html, "setVideoTitle(", ");");
-            // var Mozaique = Getstring(html, "setThumbSlideBig(", ");");
-            // var VideoUrlHigh = Getstring(html, "setVideoUrlHigh(", ");");
-            // var VideoHLS = Getstring(html, "setVideoHLS(", ");");
-            // var Thumb = Getstring(html, "setThumbUrl169(", ");");
+            var Title = Getstring(html, "setVideoTitle(", ");");
+            var Mozaique = Getstring(html, "setThumbSlideBig(", ");");
+            var VideoUrlHigh = Getstring(html, "setVideoUrlHigh(", ");");
+            var VideoHLS = Getstring(html, "setVideoHLS(", ");");
+            var Thumb = Getstring(html, "setThumbUrl169(", ");");
             
-            // video.title = Title.substring(2 , Title.length -2);
-            // video.mozaique = Mozaique.substring(2 , Mozaique.length -2);
-            // video.videoUrlHigh = VideoUrlHigh.substring(2 , VideoUrlHigh.length -2);
-            // video.videoHLS = VideoHLS.substring(2 , VideoHLS.length -2);
-            // video.thumb = Thumb.substring(2 , Thumb.length -2);
+            video.title = Title.substring(2 , Title.length -2);
+            video.mozaique = Mozaique.substring(2 , Mozaique.length -2);
+            video.videoUrlHigh = VideoUrlHigh.substring(2 , VideoUrlHigh.length -2);
+            video.videoHLS = VideoHLS.substring(2 , VideoHLS.length -2);
+            video.thumb = Thumb.substring(2 , Thumb.length -2);
 
             if(video) {
                 resolve(video);
+                await browser.close();
             } else {
                 reject('Falha');
+                await browser.close();
             }
 
-            await browser.close();
         });
     });
 
