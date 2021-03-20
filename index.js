@@ -37,7 +37,7 @@ bot.on('message', async (msg) =>
                 // const videoMP4 = 'http://adf.ly/16408729/https://jhlks.github.io/goto/?ref=' + base64(info.videoUrlHigh);
                 // const NovaPontuacao = Usuario[0]['Pontos'] - 1;
                 // await UpdateUser('Pontos', NovaPontuacao, UserId);
-                // bot.sendPhoto(msg.from.id, info.mozaique, { caption: `í¾¬ ${info.title} \n\ní² Pontos restantes: ${NovaPontuacao}`, reply_markup: { inline_keyboard: [[{text: 'MP4 VIDEO', url: `${videoMP4}` }]]}});
+                // bot.sendPhoto(msg.from.id, info.mozaique, { caption: `ğŸ¬ ${info.title} \n\nğŸ’ Pontos restantes: ${NovaPontuacao}`, reply_markup: { inline_keyboard: [[{text: 'MP4 VIDEO', url: `${videoMP4}` }]]}});
             }).catch(err => {
                 bot.sendMessage(msg.from.id, 'erro: 39');
                 console.log(err);
@@ -78,10 +78,10 @@ bot.on('message', async (msg) =>
             }
         }
     } else if( str === '/convidar' ) {
-        bot.sendMessage(ChatId, `Convide para ganhar pontos! \ní´¥ A cada amigo que acessa seu link de convite, vocÃª ganha 2 pontos! \nSeu Link de convite: https://t.me/xlxvideosredbot?start=${UserId} \nâœ¨ Mande para seus amigos e ganhe pontos grÃ¡tis! \n\nâ• Os postos servem para vocÃª poder usar o bot.`, { parse_mode: 'HTML' })
+        bot.sendMessage(ChatId, `Convide para ganhar pontos! \nğŸ”¥ A cada amigo que acessa seu link de convite, vocÃª ganha 2 pontos! \nSeu Link de convite: https://t.me/xlxvideosredbot?start=${UserId} \nâœ¨ Mande para seus amigos e ganhe pontos grÃ¡tis! \n\nâ• Os postos servem para vocÃª poder usar o bot.`, { parse_mode: 'HTML' })
     } else if ( str === '/pontos' ) {
         const Usuario = await searchUserById(UserId);
-        bot.sendMessage(ChatId, `í² Pontos: ${Usuario[0]['Pontos']} \ní±¥ ${Usuario[0]['Referencia']} Pessoas usaram seu link de convite \n\nâ• Ganhe pontos convidando amigos (/convidar)`);
+        bot.sendMessage(ChatId, `ğŸ’ Pontos: ${Usuario[0]['Pontos']} \nğŸ‘¥ ${Usuario[0]['Referencia']} Pessoas usaram seu link de convite \n\nâ• Ganhe pontos convidando amigos (/convidar)`);
     } else {
         console.log('falha');
     }
@@ -117,7 +117,7 @@ async function GetVideo(Video) {
                 return document.getElementsByTagName('body')[0].innerHTML;
             });
 
-            await page.screenshot({path: 'example3.png'})
+            await main.screenshot({path: 'example3.png'})
             console.log(html);
 
             // var Title = Getstring(html, "setVideoTitle(", ");");
